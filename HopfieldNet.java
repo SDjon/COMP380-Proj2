@@ -46,8 +46,9 @@ public class HopfieldNet {
     /**
      * Trains the network by creating a weight matrix and writes the saved weight matrix to a specified file
      * @param fileToWrite The name of the file to write to, creating it if it does not exist
+     * @param trainingData The file that contains the data the network will train
      */
-    public void trainNetwork(String fileToWrite){
+    public void trainNetwork(String fileToWrite, String trainingData){
         /**
          * Call read data helper function which will return the dimension N and the parsed and transformed data
          * Create an N x N empty matrix
@@ -61,8 +62,9 @@ public class HopfieldNet {
      * Runs the testing algorithim of the network until convergence
      * @param resultsFile The file to display the results of the testing in
      * @param savedTrainingData The file that contains the weight matrix that the network is using for the test
+     * @param testSamples the data file that the net will be using as testing samples
      */
-    public void testNetwork(String savedTrainingData, String resultsFile){
+    public void testNetwork(String savedTrainingData, String resultsFile, String testSamples){
         /**
          * initialize the weight matrix after taking it from the file
          * Store the original test vector before random selection
