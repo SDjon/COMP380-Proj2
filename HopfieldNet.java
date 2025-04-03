@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class HopfieldNet {
 
@@ -37,11 +38,50 @@ public class HopfieldNet {
     /**
      * Reads in a file and transforms the data into numbers to work with
      * @param filename The name of the file to read
-     * @return dimension the dimension number of the square matrices
+     * @return the input vectors, all transated into number representation
      */
-    public int readData(String filename){
-        int dimension = 0;
-        return dimension;
+    public List<int[]> readData(String filename){
+        int dimension = 0; //the first line in the file
+        int numOfInputs = 0; //the third line in the file
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line; //reused var, for when contents from readline are read
+
+            //Header data
+            dimension = Integer.parseInt(reader.readLine().trim().split("\\s+")[0]);
+            reader.readLine();
+            numOfInputs = Integer.parseInt(reader.readLine().trim().split("\\s+")[0]);
+            reader.readLine();
+
+            ArrayList<int[]> list = new ArrayList<>(); //a list of input vectors
+            //rest of the file
+            for (int patternNum = 0; patternNum < numOfInputs; patternNum++) {
+                int[] tempArray = new int[dimension * dimension];
+                int tempArrayIndex = 0;
+
+                for (int i = 0; i < dimension; i++) {
+                    String line = reader.readLine();
+
+                    for (int j = 0; j < line.length(); j++) {
+                        char character = line.charAt(j);
+                        if (character == 'O') {
+                            tempArray[tempArrayIndex] = 1;
+                        } else {
+                            tempArray[tempArrayIndex] = -1;
+                        }
+                        tempArrayIndex++;
+                    }
+                    reader.readLine(); // skip to go to the next pattern
+                }
+
+                list.add(tempArray); // Add the whole pattern vector
+            }
+        } catch (IOException e) {
+            // Handle file reading errors
+            e.printStackTrace();
+        }
+
+        return list;
     }
     /**
      * Trains the network by creating a weight matrix and writes the saved weight matrix to a specified file
@@ -49,14 +89,83 @@ public class HopfieldNet {
      * @param trainingData The file that contains the data the network will train
      */
     public void trainNetwork(String fileToWrite, String trainingData){
-        /**
-         * Call read data helper function which will return the dimension N and the parsed and transformed data
-         * Create an N x N empty matrix
-         * In a FOR LOOP: Calculate the weight matrix and update the initialized one accordingly
-         * In another FOR LOOP: Set all the diagonal entries to 0
-         * Write the saved weight matrix to a specified file
-         */
+        ArrayList<int[]> inputVectors = readData(trainingData);
+        int matrixDimension = (int) Math.sqrt(inputVectors.get(0).length);
+        int numberOfPatterns = inputVectors.size();
+        int vectorLength = inputVectors.get(0).length;
+        int[][] weightMatrix = new int[matrixDimension][matrixDimension];
+
+        //Build weight matrix with outer products
+        for (int[] pattern : inputVectors) {
+            for (int i = 0; i < vectorLength; i++) {
+                for (int j = 0; j < vectorLength; j++) {
+                    weightMatrix[i][j] += pattern[i] * pattern[j];
+                }
+            }
+        }
+
+        //Set diagonals in the weight matrix to zero
+        for (int i = 0; i < vectorLength; i++) {
+            weightMatrix[i][i] = 0;
+        }
+        writeWeightMatrixToFile(fileToWrite, weightMatrix);
     }
+
+    /**
+     * Writes the given weight matrix to a text file in a space-separated format,
+     * where each row of the matrix is written as a separate line in the file.
+     * @param fileToWrite   the path of the file to write the weight matrix to
+     * @param weightMatrix  a 2D integer array representing the weight matrix
+     */
+    public void writeWeightMatrixToFile(String fileToWrite, int[][] weightMatrix) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileToWrite))) {
+            int size = weightMatrix.length;
+
+            for (int i = 0; i < size; i++) {
+                StringBuilder row = new StringBuilder();
+                for (int j = 0; j < size; j++) {
+                    row.append(weightMatrix[i][j]);
+                    if (j < size - 1) {
+                        row.append(" ");
+                    }
+                }
+                writer.write(row.toString());
+                writer.newLine();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Reads a weight matrix from a text file where each line represents a row of
+     * space-separated integers. This method reconstructs and returns the matrix
+     * as a 2D integer array.
+     * @param filePath  the path to the file containing the saved weight matrix
+     * @return a 2D integer array representing the weight matrix read from the file
+     */
+    public int[][] readWeightMatrixFromFile(String filePath) {
+        List<int[]> rows = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] tokens = line.trim().split("\\s+");
+                int[] row = new int[tokens.length];
+                for (int i = 0; i < tokens.length; i++) {
+                    row[i] = Integer.parseInt(tokens[i]);
+                }
+                rows.add(row);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Convert list to 2D array
+        return rows.toArray(new int[rows.size()][]);
+    }
+
 
     /**
      * Runs the testing algorithim of the network until convergence
