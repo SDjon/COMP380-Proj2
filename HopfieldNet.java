@@ -195,7 +195,7 @@ public class HopfieldNet {
      * @param savedTrainingData The file that contains the weight matrix that the network is using for the test
      * @param testSamples the data file that the net will be using as testing samples
      */
-    public void testNetwork(String savedTrainingData, String resultsFile, String testSamples){
+    public static void testNetwork(String savedTrainingData, String resultsFile, String testSamples){
         /**
          * initialize the weight matrix after taking it from the file
          * Store the original test vector before random selection
@@ -206,6 +206,17 @@ public class HopfieldNet {
          * If the new test vector is the same as the original test vector at the start of the epoch,
          * then convergence! if not keep going and randomly select again but now the original test vector is the current
          */
+        
+        // initialize the weight matrix after taking it from the file
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Please enter the weight matrix filename you would like to read from (e.g., weights.txt):");
+        String weightMatrixFilename = scanner.nextLine();
+        int[][] weightMatrix = readWeightMatrixFromFile(weightMatrixFilename);
+
+        // Store the original test vector before random selection
+
+        // Randomly select an element of the test vector, x_i.  x = [1,3,5] <-- Randomly choose one. x_2 would be "3" in this case
+
     }
 
     public int activationFunction(int y_in){
