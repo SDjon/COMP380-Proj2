@@ -221,14 +221,9 @@ public class HopfieldNet {
          */
         
         // initialize the weight matrix after taking it from the file
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Please enter the weight matrix filename you would like to read from:");
-        String weightMatrixFilename = scanner.nextLine();
-        int[][] weightMatrix = readWeightMatrixFromFile(weightMatrixFilename);
+        int[][] weightMatrix = readWeightMatrixFromFile(savedWeightsFilename);
 
         // Store the original test vector before random selection
-        System.out.println("Please enter the sample filename you would like to read from:");
-        String testingDataFilename = scanner.nextLine();
         ArrayList<int[]> testingData = readData(testingDataFilename);
 
         // Randomly select an element of the test vector, x_i.  x = [1,3,5] <-- Randomly choose one. x_2 would be "3" in this case
