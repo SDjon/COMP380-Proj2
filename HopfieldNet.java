@@ -47,7 +47,19 @@ public class HopfieldNet {
 
     }
     public static void testingSpecs(Scanner scanner){
-       
+        System.out.println("Enter the saved weights file name:");
+        scanner.nextLine(); //get rid of newline
+        String savedWeightsFilename = scanner.nextLine();
+
+        System.out.println("Enter the testing data file name:");
+        scanner.nextLine(); //get rid of newline
+        String testingDataFilename = scanner.nextLine();
+
+        System.out.println("Enter the file name to save your results to:");
+        String resultsFilename = scanner.nextLine();
+
+        testNetwork(savedWeightsFilename,testingDataFilename,resultsFilename);
+
     }
 
     /**
@@ -191,11 +203,11 @@ public class HopfieldNet {
 
     /**
      * Runs the testing algorithim of the network until convergence
-     * @param resultsFile The file to display the results of the testing in
-     * @param savedTrainingData The file that contains the weight matrix that the network is using for the test
-     * @param testSamples the data file that the net will be using as testing samples
+     * @param savedWeightsFilename The file that contains the weight matrix that the network is using for the test
+     * @param testingDataFilename the data file that the net will be using as testing samples
+     * @param resultsFilename The file to display the results of the testing in
      */
-    public void testNetwork(String savedTrainingData, String resultsFile, String testSamples){
+    public void testNetwork(String savedWeightsFilename, String testingDataFilename, String resultsFilename){
         /**
          * initialize the weight matrix after taking it from the file
          * Store the original test vector before random selection
