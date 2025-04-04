@@ -208,5 +208,15 @@ public class HopfieldNet {
          */
     }
 
+    public int activationFunction(int y_in){
+        if (y_in > 0){
+            return 1;
+        } else if(y_in < 0){
+            return -1;
+        } else {
+            return 0;
+        }
+    }
+
 
 }
