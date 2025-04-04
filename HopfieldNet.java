@@ -37,8 +37,8 @@ public class HopfieldNet {
     }
 
     public static void trainingSpecs(Scanner scanner){
+        scanner.nextLine(); // get rid of newline read from previous nextInt()
         System.out.println("Enter the training data file name:");
-        scanner.nextLine(); //get rid of newline
         String trainingDataFileName = scanner.nextLine();
 
         System.out.println("Enter a file name to save the trained weight values:");
@@ -48,12 +48,11 @@ public class HopfieldNet {
 
     }
     public static void testingSpecs(Scanner scanner){
+        scanner.nextLine(); // get rid of newline read from previous nextInt()
         System.out.println("Enter the saved weights file name:");
-        scanner.nextLine(); //get rid of newline
         String savedWeightsFilename = scanner.nextLine();
 
         System.out.println("Enter the testing data file name:");
-        scanner.nextLine(); //get rid of newline
         String testingDataFilename = scanner.nextLine();
 
         System.out.println("Enter the file name to save your results to:");
