@@ -1,5 +1,12 @@
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
+
 
 public class HopfieldNet {
 
@@ -29,6 +36,14 @@ public class HopfieldNet {
     }
 
     public static void trainingSpecs(Scanner scanner){
+        System.out.println("Enter the training data file name:");
+        scanner.nextLine(); //get rid of newline
+        String trainingDataFileName = scanner.nextLine();
+
+        System.out.println("Enter a file name to save the trained weight values:");
+        String outputWeightFileName = scanner.nextLine();
+
+        trainNetwork(outputWeightFileName, trainingDataFileName);
 
     }
     public static void testingSpecs(Scanner scanner){
@@ -40,9 +55,9 @@ public class HopfieldNet {
      * @param filename The name of the file to read
      * @return the input vectors, all transated into number representation
      */
-    public List<int[]> readData(String filename){
-        int dimension = 0; //the first line in the file
-        int numOfInputs = 0; //the third line in the file
+    public static ArrayList<int[]> readData(String filename){
+        int dimension; //the first line in the file
+        int numOfInputs; //the third line in the file
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String line; //reused var, for when contents from readline are read
@@ -51,16 +66,19 @@ public class HopfieldNet {
             dimension = Integer.parseInt(reader.readLine().trim().split("\\s+")[0]);
             reader.readLine();
             numOfInputs = Integer.parseInt(reader.readLine().trim().split("\\s+")[0]);
+            System.out.println("Number of patterns: "+numOfInputs);
+
             reader.readLine();
 
             ArrayList<int[]> list = new ArrayList<>(); //a list of input vectors
             //rest of the file
             for (int patternNum = 0; patternNum < numOfInputs; patternNum++) {
+                System.out.println("Iteration number : "+patternNum);
                 int[] tempArray = new int[dimension * dimension];
                 int tempArrayIndex = 0;
 
                 for (int i = 0; i < dimension; i++) {
-                    String line = reader.readLine();
+                     line = reader.readLine();
 
                     for (int j = 0; j < line.length(); j++) {
                         char character = line.charAt(j);
@@ -71,31 +89,35 @@ public class HopfieldNet {
                         }
                         tempArrayIndex++;
                     }
-                    reader.readLine(); // skip to go to the next pattern
                 }
+                reader.readLine(); // skip to go to the next pattern
 
                 list.add(tempArray); // Add the whole pattern vector
             }
+            System.out.println("Training file was successfully read: "+filename);
+            return list;
         } catch (IOException e) {
             // Handle file reading errors
             e.printStackTrace();
         }
+        System.out.println("System failed to read training file data: "+filename);
+        return null;
 
-        return list;
     }
     /**
      * Trains the network by creating a weight matrix and writes the saved weight matrix to a specified file
      * @param fileToWrite The name of the file to write to, creating it if it does not exist
      * @param trainingData The file that contains the data the network will train
      */
-    public void trainNetwork(String fileToWrite, String trainingData){
+    public static void trainNetwork(String fileToWrite, String trainingData){
         ArrayList<int[]> inputVectors = readData(trainingData);
         int matrixDimension = (int) Math.sqrt(inputVectors.get(0).length);
         int numberOfPatterns = inputVectors.size();
         int vectorLength = inputVectors.get(0).length;
         int[][] weightMatrix = new int[matrixDimension][matrixDimension];
+        System.out.println("INPUT VECTORS SIZE AFTER READ DATA: "+numberOfPatterns);
 
-        //Build weight matrix with outer products
+        //Build weight matrix with outer product
         for (int[] pattern : inputVectors) {
             for (int i = 0; i < vectorLength; i++) {
                 for (int j = 0; j < vectorLength; j++) {
@@ -117,7 +139,7 @@ public class HopfieldNet {
      * @param fileToWrite   the path of the file to write the weight matrix to
      * @param weightMatrix  a 2D integer array representing the weight matrix
      */
-    public void writeWeightMatrixToFile(String fileToWrite, int[][] weightMatrix) {
+    public static void writeWeightMatrixToFile(String fileToWrite, int[][] weightMatrix) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileToWrite))) {
             int size = weightMatrix.length;
 
@@ -145,7 +167,7 @@ public class HopfieldNet {
      * @param filePath  the path to the file containing the saved weight matrix
      * @return a 2D integer array representing the weight matrix read from the file
      */
-    public int[][] readWeightMatrixFromFile(String filePath) {
+    public static int[][] readWeightMatrixFromFile(String filePath) {
         List<int[]> rows = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
