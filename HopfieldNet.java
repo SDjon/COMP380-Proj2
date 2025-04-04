@@ -114,7 +114,7 @@ public class HopfieldNet {
         int matrixDimension = (int) Math.sqrt(inputVectors.get(0).length);
         int numberOfPatterns = inputVectors.size();
         int vectorLength = inputVectors.get(0).length;
-        int[][] weightMatrix = new int[matrixDimension][matrixDimension];
+        int[][] weightMatrix = new int[matrixDimension*matrixDimension][matrixDimension*matrixDimension];
         System.out.println("INPUT VECTORS SIZE AFTER READ DATA: "+numberOfPatterns);
 
         //Build weight matrix with outer product
