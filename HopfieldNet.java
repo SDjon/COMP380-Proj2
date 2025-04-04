@@ -218,5 +218,16 @@ public class HopfieldNet {
         }
     }
 
+    public static int[] multiplyMatrices(int[][] weightMatrix, int[] inputVector){
+        int[] finalVector = new int[(inputVector.length)];
+
+        for(int weightMatrixRow = 0; weightMatrixRow < inputVector.length; weightMatrixRow++){
+            for(int weightMatrixCol = 0; weightMatrixCol < inputVector.length; weightMatrixCol++){
+                finalVector[weightMatrixCol] += weightMatrix[weightMatrixRow][weightMatrixCol] * inputVector[weightMatrixCol];
+            }
+        }
+        return finalVector;
+    }
+
 
 }
