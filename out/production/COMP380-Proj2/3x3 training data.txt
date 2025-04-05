@@ -1,0 +1,11 @@
+3 	// row dimension of image vectors
+3 	// column dimension of image vectors
+2 	// number of the image vectors
+
+OOO
+OOO
+OOO
+
+OOO
+OOO
+OOO
