@@ -3,15 +3,15 @@
 5 	// number of the image vectors
 
 O O O
- O O
+ O O 
 O O O
- O O
+ O O 
 O O O
 
 OO  O
 OO  O
-  OO
-  OO
+  OO 
+  OO 
 OO  O
 
 OOOOO
@@ -20,10 +20,10 @@ OOOOO
 OOOOO
 OOOOO
 
-O  O
+O  O 
  O  O
-  O
-O  O
+  O  
+O  O 
  O  O
 
 OOOOO
