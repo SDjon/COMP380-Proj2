@@ -94,7 +94,6 @@ public class HopfieldNet {
             colDim = colDimension;
           
             numOfInputs = Integer.parseInt(reader.readLine().trim().split("\\s+")[0]);
-            System.out.println("Number of patterns: " + numOfInputs);
 
             reader.readLine();
 
@@ -102,8 +101,8 @@ public class HopfieldNet {
             // rest of the file
             for (int patternNum = 0; patternNum < numOfInputs; patternNum++) {
 
-                System.out.println("Iteration number : "+patternNum);
                 int[] tempArray = new int[rowDimension * colDimension];
+              
                 int tempArrayIndex = 0;
 
                 for (int i = 0; i < rowDimension; i++) {
@@ -148,7 +147,6 @@ public class HopfieldNet {
         int vectorLength = inputVectors.get(0).length;
 
         int[][] weightMatrix = new int[colDim*rowDim][colDim*rowDim];
-        System.out.println("INPUT VECTORS SIZE AFTER READ DATA: "+numberOfPatterns);
 
         // Build weight matrix with outer product
         for (int[] pattern : inputVectors) {
@@ -347,24 +345,4 @@ public class HopfieldNet {
             return previous_y_i;
         }
     }
-
-    /**
-     * helper function
-     * 
-     * @param weightMatrix
-     * @param inputVector
-     * @return
-     */
-    public static int[] multiplyMatrices(int[][] weightMatrix, int[] inputVector) {
-        int[] finalVector = new int[(inputVector.length)];
-
-        for (int weightMatrixRow = 0; weightMatrixRow < inputVector.length; weightMatrixRow++) {
-            for (int weightMatrixCol = 0; weightMatrixCol < inputVector.length; weightMatrixCol++) {
-                finalVector[weightMatrixCol] += weightMatrix[weightMatrixRow][weightMatrixCol]
-                        * inputVector[weightMatrixCol];
-            }
-        }
-        return finalVector;
-    }
-
 }
