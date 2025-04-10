@@ -17,6 +17,9 @@ import java.util.List;
 import java.util.Random;
 
 public class HopfieldNet {
+    
+    public static int rowDim;
+    public static int colDim;
 
     public static void main(String[] args) {
         receiveInput();
@@ -76,15 +79,20 @@ public class HopfieldNet {
          * @param filename The name of the file to read
          * @return the input vectors, all transated into number representation
          */
-        int dimension; // the first line in the file
-        int numOfInputs; // the third line in the file
+
+        int rowDimension; //the first line in the file
+        int colDimension; //the second line in the file
+        int numOfInputs; //the third line in the file
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String line; // reused var, for when contents from readline are read
 
-            // Header data
-            dimension = Integer.parseInt(reader.readLine().trim().split("\\s+")[0]);
-            reader.readLine();
+            //Header data
+            rowDimension = Integer.parseInt(reader.readLine().trim().split("\\s+")[0]);
+            colDimension = Integer.parseInt(reader.readLine().trim().split("\\s+")[0]);
+            rowDim = rowDimension;
+            colDim = colDimension;
+          
             numOfInputs = Integer.parseInt(reader.readLine().trim().split("\\s+")[0]);
 
             reader.readLine();
@@ -92,11 +100,13 @@ public class HopfieldNet {
             ArrayList<int[]> list = new ArrayList<>(); // a list of input vectors
             // rest of the file
             for (int patternNum = 0; patternNum < numOfInputs; patternNum++) {
-                int[] tempArray = new int[dimension * dimension];
+
+                int[] tempArray = new int[rowDimension * colDimension];
+              
                 int tempArrayIndex = 0;
 
-                for (int i = 0; i < dimension; i++) {
-                    line = reader.readLine();
+                for (int i = 0; i < rowDimension; i++) {
+                     line = reader.readLine();
 
                     for (int j = 0; j < line.length(); j++) {
                         char character = line.charAt(j);
@@ -133,9 +143,10 @@ public class HopfieldNet {
          * @param trainingData The file that contains the data the network will train
          */
         ArrayList<int[]> inputVectors = readData(trainingData);
-        int matrixDimension = (int) Math.sqrt(inputVectors.get(0).length);
         int numberOfPatterns = inputVectors.size();
         int vectorLength = inputVectors.get(0).length;
+
+        int[][] weightMatrix = new int[colDim*rowDim][colDim*rowDim];
 
         // Build weight matrix with outer product
         for (int[] pattern : inputVectors) {
@@ -163,6 +174,12 @@ public class HopfieldNet {
          */
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileToWrite))) {
             int size = weightMatrix.length;
+            
+            writer.write(rowDim + " //row length");
+            writer.newLine();
+            writer.write(colDim + " //col length");
+            writer.newLine();
+            writer.newLine();
 
             for (int i = 0; i < size; i++) {
                 StringBuilder row = new StringBuilder();
@@ -193,6 +210,10 @@ public class HopfieldNet {
         List<int[]> rows = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            rowDim = Integer.parseInt(reader.readLine().trim().split("\\s+")[0]);
+            colDim = Integer.parseInt(reader.readLine().trim().split("\\s+")[0]);
+            reader.readLine();
+            
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] tokens = line.trim().split("\\s+");
@@ -274,12 +295,11 @@ public class HopfieldNet {
                 }
 
                 // Format and write results to output file
-                int dim = (int) Math.sqrt(testVector.length);
                 writer.write("Test image #" + testIndex++ + ":\n");
                 writer.write("Input test image:\n");
-                writeVectorAsImage(writer, originalInput, dim);
+                writeVectorAsImage(writer, originalInput, rowDim,colDim);
                 writer.write("\nThe associated stored image:\n");
-                writeVectorAsImage(writer, testVector, dim);
+                writeVectorAsImage(writer, testVector, rowDim,colDim);
                 writer.write("\n-------------------------------------------\n\n");
             }
         }
@@ -297,11 +317,11 @@ public class HopfieldNet {
      * @param dimension
      * @throws IOException
      */
-    public static void writeVectorAsImage(BufferedWriter writer, int[] vector, int dimension) throws IOException {
-        for (int i = 0; i < dimension; i++) {
+    public static void writeVectorAsImage(BufferedWriter writer, int[] vector, int rowDim,int colDim) throws IOException {
+        for (int i = 0; i < rowDim; i++) {
             StringBuilder line = new StringBuilder();
-            for (int j = 0; j < dimension; j++) {
-                int val = vector[i * dimension + j];
+            for (int j = 0; j < colDim; j++) {
+                int val = vector[i * colDim + j];
                 line.append(val == 1 ? "O" : " ");
             }
             writer.write(line.toString());
