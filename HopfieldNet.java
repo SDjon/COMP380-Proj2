@@ -1,3 +1,11 @@
+
+/**
+ * Project 2: Discrete Hopfield Neural Networks 
+ * Authors: Jonathan Rivera, Gianpaolo Tabora, Kian Drees, Precee-Noel Ginigeme
+ * Class: COMP 380, Neural Networks
+ * Prof: Eric Jiang
+ * Due Date: 4/10/2025
+ */
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.io.BufferedReader;
@@ -8,18 +16,17 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
-
 public class HopfieldNet {
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         receiveInput();
     }
 
-    public static void receiveInput(){
+    public static void receiveInput() {
         Scanner scanner = new Scanner(System.in);
 
         int action = 0;
-        do{
+        do {
             if (action == 1) {
                 trainingSpecs(scanner);
             } else if (action == 2) {
@@ -30,13 +37,12 @@ public class HopfieldNet {
             System.out.println("2) Enter 2 to test the net on a data file");
             System.out.println("3) Enter 3 to quit");
             action = scanner.nextInt();
-        }
-        while (action != 3);
+        } while (action != 3);
         System.out.println("Thank you for using the Net. Come back soon!");
         scanner.close();
     }
 
-    public static void trainingSpecs(Scanner scanner){
+    public static void trainingSpecs(Scanner scanner) {
         scanner.nextLine(); // get rid of newline read from previous nextInt()
         System.out.println("Enter the training data file name:");
         String trainingDataFileName = scanner.nextLine();
@@ -47,7 +53,8 @@ public class HopfieldNet {
         trainNetwork(outputWeightFileName, trainingDataFileName);
 
     }
-    public static void testingSpecs(Scanner scanner){
+
+    public static void testingSpecs(Scanner scanner) {
         scanner.nextLine(); // get rid of newline read from previous nextInt()
         System.out.println("Enter the saved weights file name:");
         String savedWeightsFilename = scanner.nextLine();
@@ -58,38 +65,38 @@ public class HopfieldNet {
         System.out.println("Enter the file name to save your results to:");
         String resultsFilename = scanner.nextLine();
 
-        testNetwork(savedWeightsFilename,testingDataFilename,resultsFilename);
+        testNetwork(savedWeightsFilename, testingDataFilename, resultsFilename);
 
     }
 
-
-    public static ArrayList<int[]> readData(String filename){
+    public static ArrayList<int[]> readData(String filename) {
         /**
          * Reads in a file and transforms the data into numbers to work with
+         * 
          * @param filename The name of the file to read
          * @return the input vectors, all transated into number representation
          */
-        int dimension; //the first line in the file
-        int numOfInputs; //the third line in the file
+        int dimension; // the first line in the file
+        int numOfInputs; // the third line in the file
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-            String line; //reused var, for when contents from readline are read
+            String line; // reused var, for when contents from readline are read
 
-            //Header data
+            // Header data
             dimension = Integer.parseInt(reader.readLine().trim().split("\\s+")[0]);
             reader.readLine();
             numOfInputs = Integer.parseInt(reader.readLine().trim().split("\\s+")[0]);
 
             reader.readLine();
 
-            ArrayList<int[]> list = new ArrayList<>(); //a list of input vectors
-            //rest of the file
+            ArrayList<int[]> list = new ArrayList<>(); // a list of input vectors
+            // rest of the file
             for (int patternNum = 0; patternNum < numOfInputs; patternNum++) {
                 int[] tempArray = new int[dimension * dimension];
                 int tempArrayIndex = 0;
 
                 for (int i = 0; i < dimension; i++) {
-                     line = reader.readLine();
+                    line = reader.readLine();
 
                     for (int j = 0; j < line.length(); j++) {
                         char character = line.charAt(j);
@@ -105,30 +112,32 @@ public class HopfieldNet {
 
                 list.add(tempArray); // Add the whole pattern vector
             }
-            System.out.println("Training file was successfully read: "+filename);
+            System.out.println("Training file was successfully read: " + filename);
             return list;
         } catch (IOException e) {
             // Handle file reading errors
             e.printStackTrace();
         }
-        System.out.println("System failed to read training file data: "+filename);
+        System.out.println("System failed to read training file data: " + filename);
         return null;
 
     }
 
-    public static void trainNetwork(String fileToWrite, String trainingData){
+    public static void trainNetwork(String fileToWrite, String trainingData) {
         /**
-         * Trains the network by creating a weight matrix and writes the saved weight matrix to a specified file
-         * @param fileToWrite The name of the file to write to, creating it if it does not exist
+         * Trains the network by creating a weight matrix and writes the saved weight
+         * matrix to a specified file
+         * 
+         * @param fileToWrite  The name of the file to write to, creating it if it does
+         *                     not exist
          * @param trainingData The file that contains the data the network will train
          */
         ArrayList<int[]> inputVectors = readData(trainingData);
         int matrixDimension = (int) Math.sqrt(inputVectors.get(0).length);
         int numberOfPatterns = inputVectors.size();
         int vectorLength = inputVectors.get(0).length;
-        int[][] weightMatrix = new int[matrixDimension*matrixDimension][matrixDimension*matrixDimension];
 
-        //Build weight matrix with outer product
+        // Build weight matrix with outer product
         for (int[] pattern : inputVectors) {
             for (int i = 0; i < vectorLength; i++) {
                 for (int j = 0; j < vectorLength; j++) {
@@ -137,7 +146,7 @@ public class HopfieldNet {
             }
         }
 
-        //Set diagonals in the weight matrix to zero
+        // Set diagonals in the weight matrix to zero
         for (int i = 0; i < vectorLength; i++) {
             weightMatrix[i][i] = 0;
         }
@@ -148,8 +157,9 @@ public class HopfieldNet {
         /**
          * Writes the given weight matrix to a text file in a space-separated format,
          * where each row of the matrix is written as a separate line in the file.
-         * @param fileToWrite   the path of the file to write the weight matrix to
-         * @param weightMatrix  a 2D integer array representing the weight matrix
+         * 
+         * @param fileToWrite  the path of the file to write the weight matrix to
+         * @param weightMatrix a 2D integer array representing the weight matrix
          */
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileToWrite))) {
             int size = weightMatrix.length;
@@ -176,7 +186,8 @@ public class HopfieldNet {
          * Reads a weight matrix from a text file where each line represents a row of
          * space-separated integers. This method reconstructs and returns the matrix
          * as a 2D integer array.
-         * @param filePath  the path to the file containing the saved weight matrix
+         * 
+         * @param filePath the path to the file containing the saved weight matrix
          * @return a 2D integer array representing the weight matrix read from the file
          */
         List<int[]> rows = new ArrayList<>();
@@ -199,25 +210,17 @@ public class HopfieldNet {
         return rows.toArray(new int[rows.size()][]);
     }
 
-
-    public static void testNetwork(String savedWeightsFilename, String testingDataFilename, String resultsFilename){
+    public static void testNetwork(String savedWeightsFilename, String testingDataFilename, String resultsFilename) {
         /**
          * Runs the testing algorithim of the network until convergence
-         * @param savedWeightsFilename The file that contains the weight matrix that the network is using for the test
-         * @param testingDataFilename the data file that the net will be using as testing samples
-         * @param resultsFilename The file to display the results of the testing in
+         * 
+         * @param savedWeightsFilename The file that contains the weight matrix that the
+         *                             network is using for the test
+         * @param testingDataFilename  the data file that the net will be using as
+         *                             testing samples
+         * @param resultsFilename      The file to display the results of the testing in
          */
-        /**
-         * initialize the weight matrix after taking it from the file
-         * Store the original test vector before random selection
-         * Randomly select an element of the test vector, x_i.  x = [1,3,5] <-- Randomly choose one. x_2 would be "3" in this case
-         * Calculate Y_in_i = x_i + [x1(W_1_i) + x2(W_2_i) +...+xn(W_n_i)
-         * Calculate y = F(Y_in_i)
-         * Broadcast and change x_i to equal y
-         * If the new test vector is the same as the original test vector at the start of the epoch,
-         * then convergence! if not keep going and randomly select again but now the original test vector is the current
-         */
-        
+
         // initialize the weight matrix after taking it from the file
         int[][] weightMatrix = readWeightMatrixFromFile(savedWeightsFilename);
 
@@ -228,8 +231,8 @@ public class HopfieldNet {
         int testIndex = 1;
 
         // try-catch for writing output file
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(resultsFilename))){
-            for (int[] testVector : testingData){
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(resultsFilename))) {
+            for (int[] testVector : testingData) {
                 int[] originalInput = testVector.clone();
                 boolean converged = false;
 
@@ -240,23 +243,23 @@ public class HopfieldNet {
                         indices.add(idx);
                     }
                     java.util.Collections.shuffle(indices, rand);
-                
+
                     int[] newVector = testVector.clone();
-                
+
                     for (int i : indices) {
                         // Compute y_in_i = x_i + sum of y_j * w_ji
-                        int y_in_i = testVector[i];  // This is x_i
+                        int y_in_i = testVector[i]; // This is x_i
                         for (int j = 0; j < testVector.length; j++) {
                             if (j != i) {
                                 y_in_i += testVector[j] * weightMatrix[j][i];
                             }
                         }
-                
+
                         // Apply activation function
                         int y_i = activationFunction(y_in_i, testVector[i]);
                         newVector[i] = y_i; // Update in new vector
                     }
-                
+
                     // Check convergence
                     converged = true;
                     for (int k = 0; k < testVector.length; k++) {
@@ -265,11 +268,11 @@ public class HopfieldNet {
                             break;
                         }
                     }
-                
+
                     // Replace testVector with updated values
                     testVector = newVector.clone();
                 }
-               
+
                 // Format and write results to output file
                 int dim = (int) Math.sqrt(testVector.length);
                 writer.write("Test image #" + testIndex++ + ":\n");
@@ -281,11 +284,19 @@ public class HopfieldNet {
             }
         }
 
-        catch (IOException e){
+        catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * Helper function that converts vector into an image
+     * 
+     * @param writer
+     * @param vector
+     * @param dimension
+     * @throws IOException
+     */
     public static void writeVectorAsImage(BufferedWriter writer, int[] vector, int dimension) throws IOException {
         for (int i = 0; i < dimension; i++) {
             StringBuilder line = new StringBuilder();
@@ -296,12 +307,19 @@ public class HopfieldNet {
             writer.write(line.toString());
             writer.newLine();
         }
-    }    
+    }
 
-    public static int activationFunction(int y_in, int previous_y_i){
-        if (y_in > 0){
+    /**
+     * Helper function to apply the activation function
+     * 
+     * @param y_in
+     * @param previous_y_i
+     * @return 1, -1, or previous_y_i
+     */
+    public static int activationFunction(int y_in, int previous_y_i) {
+        if (y_in > 0) {
             return 1;
-        } else if(y_in < 0){
+        } else if (y_in < 0) {
             return -1;
         } else {
             return previous_y_i;
