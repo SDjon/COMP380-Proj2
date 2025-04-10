@@ -291,9 +291,9 @@ public class HopfieldNet {
                 // Format and write results to output file
                 writer.write("Test image #" + testIndex++ + ":\n");
                 writer.write("Input test image:\n");
-                writeVectorAsImage(writer, originalInput, 3,5);
+                writeVectorAsImage(writer, originalInput, rowDim,colDim);
                 writer.write("\nThe associated stored image:\n");
-                writeVectorAsImage(writer, testVector, 3,5);
+                writeVectorAsImage(writer, testVector, rowDim,colDim);
                 writer.write("\n-------------------------------------------\n\n");
             }
         }
