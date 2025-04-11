@@ -2,10 +2,10 @@
 3 	// column dimension of image vectors
 2 	// number of the image vectors
 
+O O
 OOO
-OOO
-OOO
+O O
 
 OOO
-OOO
+ O 
 OOO
