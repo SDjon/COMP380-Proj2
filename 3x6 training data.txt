@@ -1,0 +1,23 @@
+3 	// row dimension of image vectors
+6 	// column dimension of image vectors
+5 	// number of the image vectors
+
+OO  OO
+OOOOOO
+OO  OO
+
+ O O O
+O O O 
+ O O O
+
+  OOOO
+OO    
+  OOOO
+
+O O O 
+O O O 
+O O O 
+
+OOOOOO
+  OO  
+OOOOOO
